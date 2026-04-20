@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Арыстан</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .card { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        .field { margin-bottom: 15px; }
+        .row { display: flex; gap: 10px; } /* Для размещения полей в одну строку */
+        .row .field { flex: 1; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; font-weight: 600; color: #555; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+        button { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:hover { background: #218838; }
+        #status { margin-top: 15px; text-align: center; font-weight: 500; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Подача заявки</h2>
+    <form id="admissionForm">
+        <div class="row">
+            <div class="field">
+                <label>Имя</label>
+                <input type="text" name="firstName" required>
+            </div>
+            <div class="field">
+                <label>Фамилия</label>
+                <input type="text" name="lastName" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label>Год рождения</label>
+                <input type="number" name="birthYear" required>
+            </div>
+            <div class="field">
+                <label>Класс поступления</label>
+                <select name="targetClass" required>
+                    <option value="9">9 класс</option>
+                    <option value="10">10 класс</option>
+                    <option value="11">11 класс</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Номер телефона</label>
+            <input type="tel" name="phone" placeholder="+7" required>
+        </div>
+
+        <div class="row">
+            <div class="field">
+                <label>Область</label>
+                <input type="text" name="region" placeholder="Например: Алматинская" required>
+            </div>
+            <div class="field">
+                <label>Ближайший город(для сдачи экзамена)</label>
+                <input type="text" name="city" placeholder="Например: Алматы" required>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>Адрес проживания</label>
+            <input type="text" name="address" placeholder="Поселок, улица" required>
+        </div>
+
+        <button type="submit" id="submitBtn">Отправить данные</button>
+    </form>
+    <div id="status"></div>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxR58MhQgaSrVskW3AFvDdklQDFwkH7IkALqEopzZ3DwxddMy8-4fE2N3MCSSsE1zihBw/exec'
+    const form = document.getElementById('admissionForm')
+    const btn = document.getElementById('submitBtn')
+    const status = document.getElementById('status')
+
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        btn.disabled = true
+        status.innerText = '⏳ Отправка...'
+        status.style.color = '#333'
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                status.innerText = 'Заявка успешно отправлена✅'
+                status.innerText = 'Подробную информацию можете посмотреть на нашем сайте: https://www.lyceum-arystan.kz/ru/'
+                status.style.color = 'green'
+                form.reset()
+                btn.disabled = false
+            })
+            .catch(error => {
+                status.innerText = '❌ Ошибка. Проверьте соединение.'
+                status.style.color = 'red'
+                btn.disabled = false
+            })
+    })
+</script>
+
+</body>
+</html>
